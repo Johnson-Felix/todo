@@ -1,6 +1,7 @@
 package com.john.todo;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -14,11 +15,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -27,7 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     Button loginButton;
     ImageButton googleButton;
     ProgressBar spinner;
+
     FirebaseAuth auth;
+    GoogleSignInClient googleSignInClient;
 
 
     @Override
@@ -49,6 +58,14 @@ public class LoginActivity extends AppCompatActivity {
             loginButton = (Button) findViewById(R.id.login_button);
             googleButton = (ImageButton) findViewById(R.id.google_button);
             spinner = (ProgressBar) findViewById(R.id.progressSpinner);
+
+            GoogleSignInOptions gso = new GoogleSignInOptions
+                    .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+
+            googleSignInClient = GoogleSignIn.getClient(LoginActivity.this,gso);
         }
     }
 
@@ -69,12 +86,51 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void googleLogin() {
-        Log.i("google","sign in");
-        GoogleSignInOptions gso = new GoogleSignInOptions
-                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
+        Intent intent = googleSignInClient.getSignInIntent();
+        startActivityForResult(intent,100);
+        spinner.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 100) {
+
+            Task<GoogleSignInAccount> signInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
+            if(signInAccountTask.isSuccessful()) {
+
+                try {
+                    GoogleSignInAccount googleSignInAccount = signInAccountTask.getResult(ApiException.class);
+                    if(googleSignInAccount != null) {
+                        AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(),null);
+                        auth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()) {
+                                    showToast("Login Successful");
+                                    goToMainPage();
+                                }
+                                else{
+                                    showToast(task.getException().getMessage());
+                                }
+                                spinner.setVisibility(View.INVISIBLE);
+                            }
+                        });
+                    }
+                    else {
+                        spinner.setVisibility(View.INVISIBLE);
+                        showToast("Sign In Error");
+                    }
+                } catch (ApiException e) {
+                    e.printStackTrace();
+                    spinner.setVisibility(View.INVISIBLE);
+                }
+            }
+            else {
+                spinner.setVisibility(View.INVISIBLE);
+                showToast("Sign In Error");
+            }
+        }
     }
 
     private void goToRegisterPage() {
@@ -104,14 +160,18 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
-                    Toast.makeText(LoginActivity.this,"Login Successfull",Toast.LENGTH_LONG).show();
+                    showToast("Login Successful");
                     goToMainPage();
                 }
                 else{
-                    Toast.makeText(LoginActivity.this,task.getException().getMessage(),Toast.LENGTH_LONG).show();
+                    showToast(task.getException().getMessage());
                 }
                 spinner.setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    private void showToast(String toast) {
+        Toast.makeText(LoginActivity.this,toast,Toast.LENGTH_SHORT).show();
     }
 }
