@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primaryTabColor">#2196F3</color>
     <color name="primarySelectedTabColor">#FFC107</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

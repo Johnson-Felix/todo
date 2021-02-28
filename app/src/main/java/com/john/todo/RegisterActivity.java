@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class RegisterActivity extends AppCompatActivity {
 
     EditText emailText, passwordText;
-    TextView newUserText;
+    Button newUserText;
     Button loginButton;
     ImageButton googleButton;
     ProgressBar spinner;
@@ -44,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             emailText = (EditText) findViewById(R.id.email_editText);
             passwordText = (EditText) findViewById(R.id.password_editText);
-            newUserText = (TextView) findViewById(R.id.go_to_login);
+            newUserText = (Button) findViewById(R.id.go_to_login);
             loginButton = (Button) findViewById(R.id.register_button);
             googleButton = (ImageButton) findViewById(R.id.google_button);
             spinner = (ProgressBar) findViewById(R.id.progressSpinner);

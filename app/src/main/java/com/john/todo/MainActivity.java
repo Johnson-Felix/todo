@@ -6,6 +6,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.PopupMenu;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,4 +60,43 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(viewerAdapter);
 
     }
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.more_button:
+                showMore(v);
+                break;
+        }
+    }
+
+    private void showMore(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        // This activity implements OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.log_out:
+                        signOut();
+                        break;
+                }
+                return false;
+            }
+        });
+        popup.inflate(R.menu.dot_menu);
+        popup.show();
+    }
+
+    private void signOut() {
+        auth.signOut();
+        goToLoginPage();
+
+    }
+
+    private void goToLoginPage() {
+        startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        finish();
+    }
+
+
 }
