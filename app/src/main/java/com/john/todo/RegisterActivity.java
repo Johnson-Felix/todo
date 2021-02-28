@@ -99,11 +99,11 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
-                    Toast.makeText(RegisterActivity.this,"User Created",Toast.LENGTH_LONG);
+                    Toast.makeText(RegisterActivity.this,"User Created",Toast.LENGTH_LONG).show();
                     goToMainPage();
                 }
                 else{
-                    Toast.makeText(RegisterActivity.this,task.getException().getMessage(),Toast.LENGTH_LONG);
+                    Toast.makeText(RegisterActivity.this,task.getException().getMessage(),Toast.LENGTH_LONG).show();
                 }
                 spinner.setVisibility(View.INVISIBLE);
             }
