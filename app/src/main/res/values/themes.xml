@@ -6,7 +6,7 @@
         <item name="colorPrimaryVariant">@color/primaryTabColor</item>
         <item name="colorOnPrimary">#FFFFFF</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#CCE6F6</item>
+        <item name="colorSecondary">@color/primarySelectedTabColor</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->

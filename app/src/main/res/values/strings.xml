@@ -10,4 +10,8 @@
     <string name="register">Register</string>
     <string name="already_registered_login">Already Registered? Login?</string>
     <string name="log_out">Log Out</string>
+    <string name="submit">submit</string>
+    <string name="task">Task</string>
+    <string name="due_date">Due Date</string>
+    <string name="add_task">Add Task</string>
 </resources>
